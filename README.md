@@ -1,3 +1,4 @@
+
 # 气象数据可视化系统
 
 基于 Django + SQLite 的气象数据可视化系统,采集六大类真实气象数据并自动生成图表、图像、图文与动画。
@@ -66,3 +67,11 @@ data/raw/                      # GOES netCDF 等原始文件
 - 交互:Chart.js 时序图(可开关站点)、Plotly 站点/浮标分布地图
 - 图像:雷达拼图、GOES 红外云图
 - 动画:雷达回波演变(8 帧)、GOES 云图演变(5 帧)、波高演变动画(48 帧)
+
+# qixiang_project
+气象数据获取之后本地解析，清洗，去重，保存之后以可视化展示
+🎬 项目演示视频
+
+
+https://github.com/user-attachments/assets/2f973c47-3803-43b3-94d5-015644e27f4a
+
