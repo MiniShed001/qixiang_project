@@ -1,0 +1,50 @@
+{% extends 'meteo/base.html' %}
+{% load static %}
+{% block title %}海洋气象 · 气象数据可视化系统{% endblock %}
+{% block content %}
+<h2>海洋气象观测</h2>
+<p class="muted">NOAA NDBC 浮标:有效波高、波周期、海温、气温、气压、风。</p>
+
+<h2>有效波高(交互)</h2>
+<div class="card"><canvas id="waveChart" height="90"></canvas></div>
+
+<h2>波高演变动画(GIF)</h2>
+<div class="card" style="text-align:center">
+  <img class="imgfull" style="max-width:720px" src="{% static 'meteo/img/ocean_wave_anim.gif' %}" alt="波高动画">
+</div>
+
+<h2>静态图表</h2>
+<div class="grid g2">
+  <div class="tile"><img src="{% static 'meteo/plots/ocean_wave.png' %}" alt="波高"><div class="cap">各浮标有效波高时序</div></div>
+  <div class="tile"><img src="{% static 'meteo/plots/ocean_sst.png' %}" alt="海温"><div class="cap">各浮标海表温度时序</div></div>
+  <div class="tile"><img src="{% static 'meteo/plots/ocean_scatter.png' %}" alt="散点"><div class="cap">风速 - 波高散点与趋势</div></div>
+</div>
+
+<h2>浮标分布</h2>
+<div class="card" style="text-align:center"><img class="imgfull" style="max-width:920px" src="{% static 'meteo/plots/ocean_map.png' %}" alt="浮标分布"></div>
+
+<table>
+  <tr><th>浮标编号</th><th>名称</th><th>纬度</th><th>经度</th></tr>
+  {% for b in buoys %}
+  <tr><td>{{ b.station_id }}</td><td>{{ b.name }}</td><td>{{ b.latitude|floatformat:2 }}</td><td>{{ b.longitude|floatformat:2 }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'meteo/vendor/chart.umd.min.js' %}"></script>
+<script>
+const wave = {{ wave|safe }};
+new Chart(document.getElementById('waveChart'), {
+  type:'line',
+  data:{labels:wave.labels, datasets:wave.datasets.map((d,i)=>({
+    label:d.label, data:d.data, borderWidth:1.6, tension:.25, spanGaps:false,
+    borderColor:['#0b6bcb','#d94f30','#2a9d3f','#9b59b6','#e67e22'][i%5],
+    backgroundColor:'transparent', pointRadius:0
+  }))},
+  options:{responsive:true, interaction:{mode:'index',intersect:false},
+    plugins:{legend:{position:'bottom'}},
+    scales:{x:{ticks:{maxTicksLimit:14}}, y:{title:{display:true,text:'有效波高 (m)'}}}}
+});
+</script>
+{% endblock %}

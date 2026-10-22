@@ -1,0 +1,24 @@
+{% extends 'meteo/base.html' %}
+{% load static %}
+{% block title %}天气雷达 · 气象数据可视化系统{% endblock %}
+{% block content %}
+<h2>天气雷达</h2>
+<p class="muted">IEM 美国全国雷达拼图(基本反射率 n0q),展示降水回波强度与分布。</p>
+
+<h2>回波演变动画(GIF)</h2>
+<div class="card" style="text-align:center">
+  <img class="imgfull" style="max-width:820px" src="{% static 'meteo/img/radar_loop.gif' %}" alt="雷达动画">
+</div>
+
+<h2>逐时次拼图</h2>
+<div class="grid g2">
+  {% for r in items %}
+  <div class="tile">
+    <img src="{{ r.image.url }}" alt="雷达 {{ r.time|date:'Y-m-d H:i' }}">
+    <div class="cap">{{ r.time|date:"Y-m-d H:i" }} UTC · {{ r.product }} / {{ r.region }}</div>
+  </div>
+  {% empty %}
+  <div class="note">暂无雷达数据。请先运行 <code>python manage.py ingest_data</code>。</div>
+  {% endfor %}
+</div>
+{% endblock %}

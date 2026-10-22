@@ -1,0 +1,39 @@
+{% extends 'meteo/base.html' %}
+{% block title %}总览 · 气象数据可视化系统{% endblock %}
+{% block content %}
+<h2>数据总览</h2>
+<div class="grid g3">
+  <div class="stat"><div class="num">{{ n_surface }}</div><div class="lbl">地面观测记录</div></div>
+  <div class="stat"><div class="num">{{ n_upper }}</div><div class="lbl">高空探测层记录</div></div>
+  <div class="stat"><div class="num">{{ n_ocean }}</div><div class="lbl">海洋浮标记录</div></div>
+  <div class="stat"><div class="num">{{ n_radar }}</div><div class="lbl">雷达拼图</div></div>
+  <div class="stat"><div class="num">{{ n_satellite }}</div><div class="lbl">卫星云图</div></div>
+  <div class="stat"><div class="num">{{ stations }}</div><div class="lbl">站点 / 浮标</div></div>
+</div>
+
+<h2>六大类数据</h2>
+<div class="grid g3">
+  <div class="card"><b>地面气象</b>
+    <p class="muted" style="font-size:.85rem">中国 5 城(Open-Meteo 逐小时)+ 美国 5 站(IEM ASOS):气温、气压、湿度、风、降水。含温度时序、风玫瑰、站点地图。</p>
+    <a href="{% url 'meteo:surface' %}">查看 →</a></div>
+  <div class="card"><b>高空气象</b>
+    <p class="muted" style="font-size:.85rem">美国 4 个探空站(IEM RAOB):各气压层温度、露点、风。含 Skew-T 斜温图与垂直廓线。</p>
+    <a href="{% url 'meteo:upperair' %}">查看 →</a></div>
+  <div class="card"><b>海洋气象</b>
+    <p class="muted" style="font-size:.85rem">5 个 NDBC 浮标:有效波高、波周期、海温、气温、气压、风。含波高/海温时序、散点拟合、波高演变动画。</p>
+    <a href="{% url 'meteo:ocean' %}">查看 →</a></div>
+  <div class="card"><b>天气雷达</b>
+    <p class="muted" style="font-size:.85rem">IEM 美国全国雷达拼图(基本反射率),多时次 GIF 动画,展示降水回波演变。</p>
+    <a href="{% url 'meteo:radar' %}">查看 →</a></div>
+  <div class="card"><b>国外气象卫星</b>
+    <p class="muted" style="font-size:.85rem">GOES-16 ABI 红外云图(AWS 开放桶 netCDF 解析渲染),多时次动画。</p>
+    <a href="{% url 'meteo:satellite' %}">查看 →</a></div>
+  <div class="card"><b>风云气象卫星</b>
+    <p class="muted" style="font-size:.85rem">FY-4A/4B。NSMC 要求实名注册(约 1 个工作日审核),管线已就绪,注册后一键入库。</p>
+    <a href="{% url 'meteo:satellite' %}">查看 →</a></div>
+</div>
+
+<div class="note">
+  所有数据均为抓取自公开免费数据源的<b>真实观测数据</b>,未经人工编造。风云卫星数据因国家卫星气象中心(NSMC)实名注册政策,需你注册后补充凭证;其余五类已实时入库。
+</div>
+{% endblock %}

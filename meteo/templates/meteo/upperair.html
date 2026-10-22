@@ -1,0 +1,19 @@
+{% extends 'meteo/base.html' %}
+{% load static %}
+{% block title %}高空气象 · 气象数据可视化系统{% endblock %}
+{% block content %}
+<h2>高空气象探测</h2>
+<p class="muted">IEM 探空档案(美国 4 站)。每个站点展示最近一次探空的 Skew-T 斜温图与温湿垂直廓线。</p>
+
+{% for s in stations %}
+<div class="card">
+  <h2>{{ s.name }} <span class="tag">{{ s.time|date:"Y-m-d H:i" }} UTC · {{ s.n_levels }} 层</span></h2>
+  <div class="grid g2">
+    <div class="tile"><img src="{% static '' %}meteo/plots/skewt_{{ s.sid }}.png" alt="Skew-T"><div class="cap">Skew-T log-P 斜温图(温度/露点/风羽)</div></div>
+    <div class="tile"><img src="{% static '' %}meteo/plots/profile_{{ s.sid }}.png" alt="廓线"><div class="cap">温度/露点垂直廓线</div></div>
+  </div>
+</div>
+{% empty %}
+<div class="note">暂无高空探测数据。请先运行 <code>python manage.py ingest_data</code>。</div>
+{% endfor %}
+{% endblock %}

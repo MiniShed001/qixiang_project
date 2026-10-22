@@ -1,0 +1,31 @@
+{% extends 'meteo/base.html' %}
+{% load static %}
+{% block title %}气象卫星 · 气象数据可视化系统{% endblock %}
+{% block content %}
+<h2>气象卫星云图</h2>
+<p class="muted">国外卫星(GOES-16,解析 AWS 开放桶 netCDF 渲染)+ 风云卫星(FY-4A/4B)。</p>
+
+<h2>GOES-16 红外云图动画(GIF)</h2>
+<div class="card" style="text-align:center">
+  <img class="imgfull" style="max-width:820px" src="{% static 'meteo/img/goes_loop.gif' %}" alt="GOES 动画">
+</div>
+
+<h2>GOES-16 逐时次云图(红外 10.3µm)</h2>
+<div class="grid g2">
+  {% for r in goes %}
+  <div class="tile">
+    <img src="{{ r.image.url }}" alt="GOES {{ r.time|date:'Y-m-d H:i' }}">
+    <div class="cap">{{ r.satellite }} {{ r.channel }} · {{ r.time|date:"Y-m-d H:i" }} UTC</div>
+  </div>
+  {% empty %}
+  <div class="note">暂无 GOES 云图。请先运行 <code>python manage.py ingest_data</code>。</div>
+  {% endfor %}
+</div>
+
+<h2>风云气象卫星</h2>
+<div class="note">
+  <b>风云四号(FY-4A/4B)数据说明:</b>国家卫星气象中心(NSMC)规定,下载风云卫星数据须实名注册并通过审核(约 1 个工作日),因此无法匿名直接抓取。
+  系统已内置凭证就绪的入库管线(见 <code>meteo/fetch.py</code> 的 <code>fetch_fy4()</code>):注册并取得账号后,即可按 卫星/仪器/产品/时间 检索订单,下载 FY-4 AGRI L1(HDF5,14 通道),再用 satpy 的 <code>agri_l1</code> reader 解析渲染云图。
+  <br>注册地址:<a href="https://satellite.nsmc.org.cn" target="_blank">https://satellite.nsmc.org.cn</a>
+</div>
+{% endblock %}

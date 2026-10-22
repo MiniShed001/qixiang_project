@@ -1,0 +1,54 @@
+{% extends 'meteo/base.html' %}
+{% load static %}
+{% block title %}地面气象 · 气象数据可视化系统{% endblock %}
+{% block content %}
+<h2>地面气象观测</h2>
+<p class="muted">中国 5 城(Open-Meteo 逐小时)+ 美国 5 站(IEM ASOS)。气温、气压、湿度、风、降水。</p>
+
+<h2>中国城市气温(交互,可点图例开关站点)</h2>
+<div class="card"><canvas id="cnChart" height="90"></canvas></div>
+
+<h2>美国站点气温(交互)</h2>
+<div class="card"><canvas id="usChart" height="90"></canvas></div>
+
+<h2>静态图表</h2>
+<div class="grid g2">
+  <div class="tile"><img src="{% static 'meteo/plots/surface_temp_cn.png' %}" alt="中国气温"><div class="cap">中国城市气温时序</div></div>
+  <div class="tile"><img src="{% static 'meteo/plots/surface_pressure_cn.png' %}" alt="中国气压"><div class="cap">中国城市气压时序</div></div>
+  <div class="tile"><img src="{% static 'meteo/plots/surface_temp_us.png' %}" alt="美国气温"><div class="cap">美国站点气温时序</div></div>
+  <div class="tile"><img src="{% static 'meteo/plots/wind_rose.png' %}" alt="风玫瑰"><div class="cap">风玫瑰图</div></div>
+</div>
+
+<h2>站点分布</h2>
+<div class="card" style="text-align:center"><img class="imgfull" style="max-width:920px" src="{% static 'meteo/plots/surface_map.png' %}" alt="站点分布"></div>
+
+<table>
+  <tr><th>站点编号</th><th>名称</th><th>纬度</th><th>经度</th><th>来源</th></tr>
+  {% for s in stations %}
+  <tr><td>{{ s.station_id }}</td><td>{{ s.name }}</td><td>{{ s.latitude|floatformat:2 }}</td><td>{{ s.longitude|floatformat:2 }}</td><td>{{ s.source }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'meteo/vendor/chart.umd.min.js' %}"></script>
+<script>
+const cn = {{ cn|safe }};
+const us = {{ us|safe }};
+function lineChart(id, data, color){
+  new Chart(document.getElementById(id), {
+    type:'line',
+    data:{labels:data.labels, datasets:data.datasets.map((d,i)=>({
+      label:d.label, data:d.data, borderWidth:1.6, tension:.25, spanGaps:false,
+      borderColor:['#0b6bcb','#d94f30','#2a9d3f','#9b59b6','#e67e22','#16a085','#c0392b','#2980b9'][i%8],
+      backgroundColor:'transparent', pointRadius:0
+    }))},
+    options:{responsive:true, interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom'}},
+      scales:{x:{ticks:{maxTicksLimit:14}}, y:{title:{display:true,text:'气温 (°C)'}}}}
+  });
+}
+lineChart('cnChart', cn);
+lineChart('usChart', us);
+</script>
+{% endblock %}
